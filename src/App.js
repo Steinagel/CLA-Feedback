@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
+import { Content } from 'carbon-components-react/es/components/UIShell';
+import Feedback from './components/Feedback';
+import ClaHeader from './components/Header';
+
+import './app.scss';
 
 class App extends Component {
   render() {
     return (
-      <div>
-        Hello Carbon! Well, not quite yet. This is the starting point for the
-        Carbon tutorial.
-      </div>
+      <>
+        <ClaHeader />
+        <Content>
+          <Feedback />
+        </Content>
+      </>
     );
   }
 }
