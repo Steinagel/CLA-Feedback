@@ -1,0 +1,44 @@
+@import './Override.scss';
+
+h4 {
+  font-size: 24px;
+}
+
+.feedback__question {
+  padding: 40px 15px;
+}
+
+.question__text-formgroup {
+  margin-top: 35px;
+}
+
+.question__text-input {
+  margin-bottom: 30px;
+}
+
+.question__h4--marged {
+  margin-bottom: 35px;
+}
+
+.question__h4--resize {
+  font-size: 20px;
+}
+
+// Effects
+fieldset.question__current--showed {
+  //transition antes de block
+  display: block;
+}
+
+fieldset.question__current--hidden {
+  //transition antes de none
+  display: none;
+}
+
+fieldset.question__sub--showed {
+  display: block;
+}
+
+fieldset.question__sub--hidden {
+  display: none;
+}
