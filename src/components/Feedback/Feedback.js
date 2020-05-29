@@ -1,187 +1,221 @@
 import React from 'react';
-
 import {
-  ProgressStep,
   ProgressIndicator,
+  ProgressStep,
   Button,
 } from 'carbon-components-react';
-import Questions from '../../components/Questions';
+
+import {
+  PersonalQuestions,
+  MultiOptionsQuestion,
+  TextAreaQuestion,
+} from '../../components/Questions';
+
+import {
+  stepNumber,
+  answer,
+  frameQuestion1,
+  frameQuestion1_1,
+  frameQuestion1_2,
+  frameQuestion1_3,
+  frameQuestion1_4,
+  frameQuestion2,
+  frameQuestion2_1,
+  framQuestion3,
+  framQuestion3_1,
+} from './Config';
 
 import './Feedback.scss';
-
-const _questions = [
-  {
-    id: 0,
-    question: 'Do you know Contract Language Analyzer application? :D',
-    sub: [
-      'Please, type your full name here:',
-      'Your mail:',
-      'Country you are now:',
-    ],
-    answer: {
-      question: null,
-      sub: {
-        name: '',
-        email: '',
-        country: '',
-      },
-    },
-  },
-  {
-    id: 1,
-    question: 'Has CLA ( Contract Language Analyzer) helped you in your work?',
-    yes: "That's great! Tell us a bit more please :D",
-    no: 'Why not? Tell us a bit more, please :(',
-    answer: { question: null, sub: '' },
-  },
-  {
-    id: 2,
-    question: 'Would you recommend us?',
-    yes: 'Amazing! Which feature helped you the most? *_*',
-    no: 'Why not? What is missing? :(',
-    answer: { question: null, sub: '' },
-  },
-  {
-    id: 3,
-    question: 'Do we facilitate your daily work?',
-    yes: 'That is really good! Tell us how please :D',
-    no:
-      'What functionality do we need to improve to help you in your daily works? :(',
-    answer: { question: null, sub: '' },
-  },
-  {
-    id: 4,
-    question: 'Would you like to leave a final suggestion? :)',
-    yes: 'Leave your suggestion bellow. We will love to know what you think <3',
-    no: false,
-    answer: { question: null, sub: '' },
-  },
-];
 
 class Feedback extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      questions: _questions,
-      current: 0,
+      answer: answer,
+      curStep: 0,
+      curQuestions: [0],
+      buttonStatus: 0, //0: waiting answer/disabled/null, 1: next/enabled/handleCurrent, 2: finish/enabled/finishQuestionary, N: error
     };
 
-    this.handleCurrent = this.handleCurrent.bind(this);
-    this.handleQuestions = this.handleQuestions.bind(this);
-    this.btnText = this.btnText.bind(this);
-    this.sendData = this.sendData.bind(this);
+    this.stepNumber = stepNumber;
+    this.frameQuestion1 = frameQuestion1;
+    this.frameQuestion1_1 = frameQuestion1_1;
+    this.frameQuestion1_2 = frameQuestion1_2;
+    this.frameQuestion1_3 = frameQuestion1_3;
+    this.frameQuestion1_4 = frameQuestion1_4;
+    this.frameQuestion2 = frameQuestion2;
+    this.frameQuestion2_1 = frameQuestion2_1;
+    this.framQuestion3 = framQuestion3;
+    this.framQuestion3_1 = framQuestion3_1;
+
+    this.handleCurrentStep = this.handleCurrentStep.bind(this);
+    this.handleCurrentQuestion = this.handleCurrentQuestion.bind(this);
+    this.handleButtonStatus = this.handleButtonStatus.bind(this);
+    this.handleAnswer = this.handleAnswer.bind(this);
+    this._finishQuestionary = this._finishQuestionary.bind(this);
+    this._incrementCurrentStep = this._incrementCurrentStep.bind(this);
+    this._getButtonProps = this._getButtonProps.bind(this);
+    this.handleAddQuestionItem = this.handleAddQuestionItem.bind(this);
+    this.handleRemoveQuestionItem = this.handleRemoveQuestionItem.bind(this);
+    this._getStepClass = this._getStepClass.bind(this);
+    this._getSubQuestionClass = this._getSubQuestionClass.bind(this);
+    this._sendData = this._sendData.bind(this);
   }
 
-  handleCurrent(current) {
-    this.setState({ current: current + 1 });
+  handleCurrentStep(curStep) {
+    this.setState({ curStep });
   }
 
-  handleQuestions(questions) {
-    this.setState({ questions });
+  handleCurrentQuestion(curQuestions) {
+    this.setState({ curQuestions });
   }
 
-  finishQuestionary(current) {}
-
-  btnText(question) {
-    let btnText;
-    let btnEnabled = false;
-    let btnFunction;
-
-    if (question.answer.question === null) {
-      btnText = 'Waiting answer...';
-      btnEnabled = false;
-    } else if (question.id === 0) {
-      if (!question.answer.question) {
-        btnText = 'Finish';
-        btnEnabled = true;
-        btnFunction = this.finishQuestionary;
-      } else if (question.answer.question) {
-        if (
-          question.answer.sub.name.trim() === '' ||
-          question.answer.sub.email.trim() === '' ||
-          question.answer.sub.country.trim() === ''
-        ) {
-          btnText = 'Waiting answer...';
-          btnEnabled = false;
-        } else {
-          btnText = 'Next';
-          btnEnabled = true;
-          btnFunction = this.handleCurrent;
-        }
-      }
-    } else {
-      if (!question.answer.question) {
-        if (question.no === false) {
-          btnEnabled = true;
-          btnText = 'Finish';
-          btnFunction = this.finishQuestionary;
-        } else {
-          if (question.answer.sub.trim() === '') {
-            btnText = 'Waiting answer...';
-            btnEnabled = false;
-          } else {
-            btnEnabled = true;
-            btnText = 'Next';
-            btnFunction = this.handleCurrent;
-          }
-        }
-      } else {
-        if (question.no === false && question.answer.sub.trim() !== '') {
-          btnEnabled = true;
-          btnText = 'Finish';
-          btnFunction = this.finishQuestionary;
-        } else if (question.answer.sub.trim() === '') {
-          btnText = 'Waiting answer...';
-          btnEnabled = false;
-        } else {
-          btnText = 'Next';
-          btnEnabled = true;
-          btnFunction = this.handleCurrent;
-        }
-      }
+  handleAddQuestionItem(item) {
+    const curQuestions = this.state.curQuestions;
+    if (!curQuestions.includes(item)) {
+      curQuestions.push(item);
+      this.setState({ curQuestions });
     }
-
-    return { btnText, btnEnabled, btnFunction };
   }
 
-  sendData() {
-    // Save questions in new file
+  handleRemoveQuestionItem(item) {
+    const curQuestions = this.state.curQuestions;
+    this.setState({ curQuestions: remove(curQuestions, item) });
   }
+
+  handleAnswer(answer) {
+    this.setState({ answer });
+  }
+
+  handleButtonStatus(buttonStatus) {
+    this.setState({ buttonStatus });
+  }
+
+  _incrementCurrentStep() {
+    const _lastCur = this.state.curStep;
+    if (_lastCur < this.stepNumber) {
+      this.handleCurrentStep(_lastCur + 1);
+      this.handleAddQuestionItem((_lastCur | 0) + 1);
+      this.handleButtonStatus(0);
+    }
+  }
+
+  _getStepClass(step) {
+    const curStep = this.state.curStep;
+    return (
+      (curStep === step && 'current--step question--shown') ||
+      'question--hidden'
+    );
+  }
+
+  _getSubQuestionClass(sub) {
+    const curQuestions = this.state.curQuestions;
+    return (
+      (curQuestions === sub && 'current--subquestion question--shown') ||
+      'question--hidden'
+    );
+  }
+
+  _getButtonProps() {
+    const status = this.state.buttonStatus;
+
+    if (status === 0)
+      return { text: 'Waiting answer', disabled: true, onClick: null };
+    else if (status === 1)
+      return {
+        text: 'Next',
+        disabled: false,
+        onClick: this._incrementCurrentStep,
+      };
+    else if (status === 2)
+      return {
+        text: 'Finish',
+        disabled: false,
+        onClick: this._finishQuestionary,
+      };
+    else
+      return {
+        text: 'Error :/',
+        disabled: true,
+        onClick: null,
+      };
+  }
+
+  _finishQuestionary() {}
+
+  _sendData() {}
 
   render() {
-    const curr = this.state.current;
-    const questions = this.state.questions;
-
-    const { btnText, btnEnabled, btnFunction } = this.btnText(questions[curr]);
+    const { curStep, curQuestions } = this.state;
+    console.log(curQuestions);
+    const answer = this.state.answer;
+    const { text, disabled, onClick } = this._getButtonProps();
 
     return (
       <>
         <div className="bx--grid bx--grid--full-width">
           <div className="bx--row">
-            <div className="bx--col-sm-4 bx--col-md-6 bx--offset-md-1 bx--col-lg-8 bx--offset-lg-2">
+            <div className="bx--col-sm-4 bx--col-md-6 bx--offset-md-1 bx--col-lg-6 bx--offset-lg-3">
               <div className="bx--row main">
                 <div className="bx--col-sm-4 bx--col-md-8 bx--col-lg-12">
-                  <ProgressIndicator currentIndex={curr}>
-                    {questions.map(question => (
-                      <ProgressStep
-                        key={question.id}
-                        current={curr === question.id ? true : false}
-                        label={`Step ${question.id + 1}`}
-                        description={question.description}
-                      />
-                    ))}
+                  <ProgressIndicator currentIndex={curStep}>
+                    <ProgressStep
+                      key="1"
+                      current={curStep === 0}
+                      label="Step 1"
+                    />
+                    <ProgressStep
+                      key="2"
+                      current={curStep === 1}
+                      label="Step 2"
+                    />
+                    <ProgressStep
+                      key="3"
+                      current={curStep === 2}
+                      label="Step 3"
+                    />
+                    <ProgressStep
+                      key="4"
+                      current={curStep === 3}
+                      label="Finish"
+                    />
                   </ProgressIndicator>
-                  {console.log(questions[curr])}
-                  <Questions
-                    questions={questions}
-                    curr={curr}
-                    handleQuestions={this.handleQuestions}
-                  />
-                  <Button
-                    disabled={!btnEnabled}
-                    onClick={() => btnFunction(curr)}
-                    className="main__button">
-                    {btnText}
+
+                  <div className={this._getStepClass(0)}>
+                    <PersonalQuestions
+                      answer={answer}
+                      handleAnswer={this.handleAnswer}
+                      buttonStatus={this.state.buttonStatus}
+                      handleButtonStatus={this.handleButtonStatus}
+                      curStep={curStep}
+                      _id={0}
+                    />
+                  </div>
+                  <div className={this._getStepClass(1)}>
+                    <MultiOptionsQuestion.Radio
+                      frame={this.frameQuestion1}
+                      answer={answer}
+                      handleAnswer={this.handleAnswer}
+                      curQuestions={curQuestions}
+                      handleAddQuestionItem={this.handleAddQuestionItem}
+                      handleRemoveQuestionItem={this.handleRemoveQuestionItem}
+                      curStep={curStep}
+                    />
+                    <div className={this._getSubQuestionClass(1.1)}>
+                      <TextAreaQuestion
+                        handleAnswer={this.handleAnswer}
+                        id="text-area-0"
+                        text={this.frameQuestion1_1}
+                        answer={answer}
+                      />
+                    </div>
+                    <div className={this._getSubQuestionClass(1.2)}>
+                      MULT OPTIONS QUESTION COMPONENT CHECK
+                    </div>
+                  </div>
+
+                  <Button disabled={disabled} onClick={onClick}>
+                    {text}
                   </Button>
                 </div>
               </div>
@@ -191,6 +225,10 @@ class Feedback extends React.Component {
       </>
     );
   }
+}
+
+function remove(array, element) {
+  return array.filter(el => el !== element);
 }
 
 export default Feedback;

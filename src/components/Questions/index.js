@@ -1,3 +1,5 @@
-import Questions from './Questions';
+import PersonalQuestions from './PersonalQuestions';
+import MultiOptionsQuestion from './MultiOptionsQuestion';
+import TextAreaQuestion from './TextAreaQuestion';
 
-export default Questions;
+export { PersonalQuestions, MultiOptionsQuestion, TextAreaQuestion };

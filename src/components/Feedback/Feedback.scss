@@ -4,6 +4,14 @@
 
 // }
 
-.main__button {
-  margin-top: 20px;
+.question--hidden {
+  display: none;
+}
+
+.question--shown {
+  display: block;
+}
+
+legend.question__form-group {
+  padding-top: 20px;
 }
