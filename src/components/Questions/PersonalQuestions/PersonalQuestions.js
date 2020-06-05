@@ -1,12 +1,6 @@
 import React from 'react';
 
-import {
-  // RadioButtonGroup,
-  // RadioButton,
-  FormGroup,
-  // TextArea,
-  TextInput,
-} from 'carbon-components-react';
+import { FormGroup, TextInput, ToggleSmall } from 'carbon-components-react';
 
 import './PersonalQuestions.scss';
 
@@ -31,6 +25,13 @@ class PersonalQuestions extends React.Component {
     this.props.handleAnswer(answer);
   }
 
+  _updateContact(answer, contact) {
+    const _prev = answer.question0.personal.contact;
+    contact = _prev !== 'on' ? 'on' : 'off';
+    answer.question0.personal.contact = contact;
+    this.props.handleAnswer(answer);
+  }
+
   _validButtonStatus() {
     const { personal } = this.props.answer.question0;
     return personal.name.trim() !== '' &&
@@ -50,15 +51,15 @@ class PersonalQuestions extends React.Component {
   }
 
   render() {
-    const { _id, answer } = this.props;
+    const { id, answer } = this.props;
     const { name, email, country } = answer.question0.personal;
 
     return (
-      <FormGroup legendText="Answer bellow:" className="question__form-group">
+      <FormGroup legendText="Answer bellow" className="question__form-group">
         <h4 className="question__ask">Please, tell us who you are?</h4>
         <TextInput
           helperText=""
-          id={`nameInput_${_id}`}
+          id={`nameInput_${id}`}
           invalidText="Please, your opinion is important!"
           labelText="Please enter your Name:"
           placeholder="John..."
@@ -68,7 +69,7 @@ class PersonalQuestions extends React.Component {
         />
         <TextInput
           helperText=""
-          id={`emailInput_${_id}`}
+          id={`emailInput_${id}`}
           invalidText="Please, your opinion is important!"
           labelText="Email:"
           placeholder="john@example.com"
@@ -78,13 +79,19 @@ class PersonalQuestions extends React.Component {
         />
         <TextInput
           helperText=""
-          id={`countryInput_${_id}`}
+          id={`countryInput_${id}`}
           invalidText="Please, your opinion is important!"
           labelText="Your Country:"
           placeholder="Madagascar"
           className="personal__input"
           value={country}
           onChange={event => this._updateCountry(answer, event.target.value)}
+        />
+        <ToggleSmall
+          aria-label="toggle-button"
+          id="toggle-2"
+          labelText="We may follow you up. Would you like to be contacted?"
+          onChange={event => this._updateContact(answer, event.target.value)}
         />
       </FormGroup>
     );

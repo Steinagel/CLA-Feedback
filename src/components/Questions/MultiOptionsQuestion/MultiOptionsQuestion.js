@@ -4,6 +4,7 @@ import {
   FormGroup,
   RadioButtonGroup,
   RadioButton,
+  Checkbox,
 } from 'carbon-components-react';
 
 import './MultiOptionsQuestion.scss';
@@ -14,60 +15,40 @@ class MultiOptionsRadio extends React.Component {
     this.state = {};
   }
 
-  _updateUsage(answer, usage) {
-    answer.question0.toolUsage = usage;
+  _updateQuestion(value) {
+    let { answer } = this.props;
+    const { question, selector } = this.props;
+
+    answer[question][selector] = value;
+
     this.props.handleAnswer(answer);
   }
 
-  _validAnswer() {
-    const { toolUsage } = this.props.answer.question0;
-    return toolUsage === undefined || toolUsage === null ? -1 : toolUsage;
-  }
-
-  componentDidUpdate() {
-    const {
-      curStep,
-      curQuestions,
-      handleAddQuestionItem,
-      handleRemoveQuestionItem,
-    } = this.props;
-
-    if (curStep === 1) {
-      const answerNumber = this._validAnswer();
-      if ([0, 1, 2].includes(answerNumber) && !curQuestions.includes(1.1)) {
-        handleRemoveQuestionItem(1.2);
-        handleAddQuestionItem(1.1);
-      } else if ([3, 4].includes(answerNumber) && !curQuestions.includes(1.2)) {
-        handleRemoveQuestionItem(1.1);
-        handleAddQuestionItem(1.2);
-      }
-    }
-  }
-
   render() {
-    const { answer } = this.props;
+    const { id, className } = this.props;
     const { question, options } = this.props.frame;
 
     return (
-      <FormGroup legendText="Selecte one:" className="question__form-group">
+      <FormGroup
+        legendText="Selecte one"
+        className={`question__form-group ${className}`}>
         <h4 className="question__ask">{question}</h4>
-        <FormGroup className="group--spacing" legendText="Options">
-          <RadioButtonGroup
-            orientation="vertical"
-            defaultSelected="default-selected"
-            legend="Group Legend"
-            name="radio-button-group"
-            onChange={value => this._updateUsage(answer, value)}>
-            {options.map((option, _id) => (
-              <RadioButton
-                id={`radio_${_id}`}
-                value={_id}
-                key={_id}
-                labelText={option}
-              />
-            ))}
-          </RadioButtonGroup>
-        </FormGroup>
+        <RadioButtonGroup
+          id={id}
+          orientation="vertical"
+          legend=""
+          valueSelected={2}
+          name={`radio-button-group-${id}`}
+          onChange={value => this._updateQuestion(value)}>
+          {options.map((option, _index) => (
+            <RadioButton
+              id={`radio--${id}_${_index}`}
+              value={_index}
+              key={id + _index}
+              labelText={option}
+            />
+          ))}
+        </RadioButtonGroup>
       </FormGroup>
     );
   }
@@ -76,38 +57,53 @@ class MultiOptionsRadio extends React.Component {
 class MultiOptionsCheck extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isLast: false,
+    };
   }
 
-  _updateOptions(answer, options) {
-    answer.options = options;
+  _updateQuestion(_id, value, options) {
+    let { answer } = this.props;
+    const { question, selector } = this.props;
+
+    if (_id === options.length - 1 && value) {
+      this.setState({ isLast: true });
+    } else this.setState({ isLast: false });
+
+    answer[question][selector][_id] = value;
+
     this.props.handleAnswer(answer);
   }
 
-  _validButtonStatus() {
-    const { toolUsage } = this.props.answer;
-    return toolUsage === undefined || toolUsage === null ? 0 : 1;
-  }
-
-  componentDidUpdate() {
-    //Updating button
-    console.log(this.props.curStep);
-    if (this.props.curStep === 1) {
-      console.log(this._validButtonStatus());
-      const validStatus = this._validButtonStatus();
-      if (validStatus !== this.props.button_status)
-        this.props.handleButtonStatus(validStatus);
-    }
+  _mustBeDisabled(_id, options) {
+    const length = options.length;
+    if (this.state.isLast && _id !== length - 1) return true;
+    return false;
   }
 
   render() {
-    // const { answer } = this.props;
+    const { id, className } = this.props;
+    const { question, options } = this.props.frame;
 
     return (
       <FormGroup
-        legendText="Selecte multiple:"
-        className="question__form-group">
-        <h4 className="question__ask">RADIO KRL</h4>
+        legendText="Selecte one"
+        className={`question__form-group ${className}`}>
+        <h4 className="question__ask">{question}</h4>
+        <fieldset className="bx--fieldset" id={id}>
+          <legend className="bx--label">Choose:</legend>
+          {options.map((option, _id) => {
+            return (
+              <Checkbox
+                labelText={option}
+                key={_id}
+                id={`check-item-${_id}`}
+                onChange={value => this._updateQuestion(_id, value, options)}
+                disabled={this._mustBeDisabled(_id, options)}
+              />
+            );
+          })}
+        </fieldset>
       </FormGroup>
     );
   }

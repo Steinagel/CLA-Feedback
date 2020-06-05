@@ -1,37 +1,37 @@
 const stepNumber = 3;
 const answer = {
   question0: {
-    filled: false,
-    personal: { name: '', email: '', country: '' },
+    personal: {
+      name: '',
+      email: '',
+      country: '',
+      contact: '',
+    },
   },
   question1: {
-    filled: false,
     toolUsage: null,
   },
   question1_2_3: {
-    filled: false,
     isMissing: '',
-    moreValue: [],
+    moreValue: [false, false, false, false, false, false],
   },
   question1_4_5: {
-    filled: false,
     xpSuggest: '',
     neverUse: '',
   },
   question2: {
-    filled: false,
     howSatisfied: null,
   },
   question2_1: {
-    filled: false,
     comment: '',
   },
   question3: {
-    filled: false,
-    npsValue: null,
+    npsValue: 7,
+  },
+  question3_1: {
+    comment: '',
   },
 };
-
 const frameQuestion1 = {
   question: 'Do you know the Contracting Language Analysis tool?',
   options: [
@@ -43,10 +43,10 @@ const frameQuestion1 = {
   ],
 };
 
-const frameQuestion1_1 =
+const frameQuestion11 =
   'To help us to improve, could you please share more what is missing to know more about the tool?';
 
-const frameQuestion1_2 = {
+const frameQuestion12 = {
   question: 'In your opinion, what would add more value to the tool?',
   options: [
     'Overview page',
@@ -58,10 +58,10 @@ const frameQuestion1_2 = {
   ],
 };
 
-const frameQuestion1_3 =
+const frameQuestion13 =
   'Please, how was your experience? Do you have any suggestions to improve the analysis results?';
 
-const frameQuestion1_4 =
+const frameQuestion14 =
   'Could you please comment on why you never used or any suggestions?';
 
 const frameQuestion2 = {
@@ -75,24 +75,24 @@ const frameQuestion2 = {
   ],
 };
 
-const frameQuestion2_1 = 'Please comment: ';
+const frameQuestion21 = 'Explain why:';
 
-const framQuestion3 =
+const frameQuestion3 =
   'How likely is that you would recommend the CLA tool to a friend or colleague?';
 
-const framQuestion3_1 =
+const frameQuestion31 =
   'If you have any other comments questions or concerns please type bellow:';
 
 module.exports = {
   stepNumber,
   answer,
   frameQuestion1,
-  frameQuestion1_1,
-  frameQuestion1_2,
-  frameQuestion1_3,
-  frameQuestion1_4,
+  frameQuestion11,
+  frameQuestion12,
+  frameQuestion13,
+  frameQuestion14,
   frameQuestion2,
-  frameQuestion2_1,
-  framQuestion3,
-  framQuestion3_1,
+  frameQuestion21,
+  frameQuestion3,
+  frameQuestion31,
 };

@@ -10,15 +10,15 @@ import './Header.scss';
 class ClaHeader extends React.Component {
   render() {
     return (
-      <Header aria-label="CLA Feedback">
+      <Header aria-label="Contract Language Analyzer Feedback Survey">
         <SkipToContent />
         <img
           className="header__image"
           src={require('../../assets/logo-nav.png')}
           alt="CLA icon"
         />
-        <HeaderName href="/" prefix="CLA">
-          Feedback :D
+        <HeaderName href="/" prefix="Contract Language Analyzer">
+          Feedback Survey
         </HeaderName>
       </Header>
     );

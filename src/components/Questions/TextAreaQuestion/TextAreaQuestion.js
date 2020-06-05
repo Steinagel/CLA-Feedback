@@ -10,27 +10,31 @@ class TextAreaQuestion extends React.Component {
     this.state = {};
   }
 
-  _updateWhatIsMissing(answer, missing) {
-    answer.missing = missing;
+  _updateQuestion(value) {
+    let { answer } = this.props;
+    const { question, selector } = this.props;
+
+    answer[question][selector] = value;
+
     this.props.handleAnswer(answer);
   }
 
   render() {
-    const { id, text, answer } = this.props;
+    const { id, answer, question, selector, className } = this.props;
+    const { frame } = this.props;
     return (
-      <FormGroup legendText="">
-        <h4 className="question__ask">{text}</h4>
+      <FormGroup
+        legendText="Answer bellow"
+        className={`question__form-group ${className}`}>
+        <h4 className="question__ask">{frame}</h4>
         <TextArea
           cols={50}
           id={id}
-          invalidText="A valid value is required"
-          labelText="Your answer is important:"
-          placeholder="The analysis could..."
+          labelText="Please, input here:"
+          placeholder="Placeholder text."
           rows={4}
-          value={answer.missing}
-          onChange={event =>
-            this._updateWhatIsMissing(answer, event.target.value)
-          }
+          value={answer[question][selector]}
+          onChange={event => this._updateQuestion(event.target.value)}
         />
       </FormGroup>
     );
