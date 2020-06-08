@@ -12,7 +12,17 @@ import './MultiOptionsQuestion.scss';
 class MultiOptionsRadio extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { classes: '' };
+  }
+
+  componentDidUpdate(prevProps) {
+    setTimeout(() => {
+      const cur_class = this.state.classes;
+      if (prevProps.className !== this.props.className)
+        this.setState({
+          classes: cur_class === 'fadeIn' ? 'fadeOut' : 'fadeIn',
+        });
+    }, 10);
   }
 
   _updateQuestion(value) {
@@ -31,7 +41,7 @@ class MultiOptionsRadio extends React.Component {
     return (
       <FormGroup
         legendText="Selecte one"
-        className={`question__form-group ${className}`}>
+        className={`question__form-group ${className} ${this.state.classes}`}>
         <h4 className="question__ask">{question}</h4>
         <RadioButtonGroup
           id={id}
@@ -59,7 +69,18 @@ class MultiOptionsCheck extends React.Component {
     super(props);
     this.state = {
       isLast: false,
+      classes: '',
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    setTimeout(() => {
+      const cur_class = this.state.classes;
+      if (prevProps.className !== this.props.className)
+        this.setState({
+          classes: cur_class === 'fadeIn' ? '' : 'fadeIn',
+        });
+    }, 10);
   }
 
   _updateQuestion(_id, value, options) {
@@ -88,7 +109,7 @@ class MultiOptionsCheck extends React.Component {
     return (
       <FormGroup
         legendText="Selecte one"
-        className={`question__form-group ${className}`}>
+        className={`question__form-group ${className} ${this.state.classes}`}>
         <h4 className="question__ask">{question}</h4>
         <fieldset className="bx--fieldset" id={id}>
           <legend className="bx--label">Choose:</legend>
